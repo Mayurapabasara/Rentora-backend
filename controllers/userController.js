@@ -94,12 +94,6 @@ export function isAdmin(req, res, next){
 
 
 
-
-
-
-
-
-
 export function updateUser(req, res){
     res.send("Update a user");
 }
@@ -107,3 +101,4 @@ export function updateUser(req, res){
 export function deleteUser(req, res){
     res.send("Delete a user");
 } 
+
