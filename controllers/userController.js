@@ -62,10 +62,19 @@ export function loginUser(req, res){
                         role: user.type,
                         isBlocked: user.isBlocked,
                         isEmailVerified: user.isEmailVerified
-                    }, "jwt-secret");
+                    }, process.env.JWT_SECRET);
 
 
-                    res.json({ message: "Login successful", user: { /*id: user._id, fullname: user.fullname, email: user.email,*/ token: token } });
+                    res.json({
+                        message: "Login successful",
+                        token: token,
+                        user: {
+                            id: user._id,
+                            fullname: user.fullname,
+                            email: user.email,
+                            role: user.type
+                        }
+                    });
 
                 } else {
                     res.status(401).json({ message: "Invalid password" });

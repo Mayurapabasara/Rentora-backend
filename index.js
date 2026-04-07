@@ -4,39 +4,51 @@ import studentRouter from './routes/studentRouter.js';
 import userRouter from './routes/userRouter.js';
 import productRouter from './routes/productRouter.js';
 import jwt from "jsonwebtoken";
+import cors from "cors";
+import dotenv from "dotenv";
+
+dotenv.config(); // .env file eke thiyn data me file ekt load kirima sidu karai
 
 const app = express(); // Create an instance of the Express application, include the another backend
+app.use(cors());
 
 app.use(express.json()); // Middleware to parse JSON request bodies
 
 //create a middleware
-app.use((req, res, next) => {
+app.use(
 
-    let token = req.headers.authorization;
+    (req, res, next) => {
 
-    if (token != null) {
-        token = token.replace("Bearer ", "");
-        console.log("Token received:", token);
+        // ✅ Skip authentication for login & register
+        if (req.path === "/api/users/login" || req.path === "/api/users") {
+            return next();
+        }
 
-        jwt.verify(token, "jwt-secret", (err, decoded) => {
+        let token = req.headers.authorization;
 
-            if (err) {
-                return res.status(401).json({
-                    message: "Invalid token, please login again"
-                });
-            }
+        if (token != null) {
+            token = token.replace("Bearer ", "");
+            console.log("Token received:", token);
 
-            req.user = decoded;
-            next();   //ove inside
-        });
+            jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
 
-    } else {
-        next(); // no token → continue
-    }
-});
+                if (err) {
+                    return res.status(401).json({
+                        message: "Invalid token, please login again"
+                    });
+                }
+
+                req.user = decoded;
+                next();   //ove inside
+            });
+
+        } else {
+            next(); // no token → continue
+        }
+    });
 
 
-const connectionString = "mongodb://admin:2000@ac-xf8xt2x-shard-00-00.jxtu1la.mongodb.net:27017,ac-xf8xt2x-shard-00-01.jxtu1la.mongodb.net:27017,ac-xf8xt2x-shard-00-02.jxtu1la.mongodb.net:27017/?ssl=true&replicaSet=atlas-h7rmqn-shard-0&authSource=admin&retryWrites=true&w=majority";
+const connectionString = process.env.MONGO_URL;
 
 mongoose.connect(connectionString)
   .then(() => {
@@ -47,9 +59,9 @@ mongoose.connect(connectionString)
   });
 
 //routes
-app.use("/students", studentRouter);
-app.use("/users", userRouter);
-app.use("/products", productRouter);
+app.use("/api/students", studentRouter);
+app.use("/api/users", userRouter);
+app.use("/api/products", productRouter);
 
 
 // Arro function and backend starting
