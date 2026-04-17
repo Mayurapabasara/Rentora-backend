@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema({
 
-    porductId: {
+    productId: {
         type: String,
         required: true,
         unique: true
@@ -37,6 +37,11 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    stock: {
+        type: Number,
+        required: true,
+        default: 0
+    }
 
 });
 

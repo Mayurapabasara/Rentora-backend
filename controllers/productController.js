@@ -3,15 +3,15 @@ import { isAdmin } from "./userController.js";
 
 export async function createProduct(req, res) {
     try{
-        const porductData = req.body;
+        const productData = req.body;
 
-        const porduct = new Product(porductData);
+        const product = new Product(productData);
 
-        await porduct.save()
+        await product.save()
 
         res.json({
             message: "Product created successfully",
-            porduct: porduct
+            product: product
         });
 
     }catch(err){
@@ -52,7 +52,7 @@ export async function deleteProduct(req, res) {
             });
         }
         await Product.deleteOne({
-            porductId: productId
+            productId: productId
         })
         res.json({
             message: "Product deleted successfully"
@@ -68,21 +68,18 @@ export async function deleteProduct(req, res) {
 
 export async function updateProduct(req, res) {
 
-    // if(!isAdmin(req)){
-    //     res.status(403).json({
-    //         message: "Access denied. Admins only."
-    //     });
-    //     return;
-    // }
-
     try{
         const productId = req.params.productId;
         const updateData = req.body;
 
         await Product.updateOne(
             {productId: productId},
-            {updateData}
-        )
+            {$set: updateData}
+        );
+        res.json({
+            message: "Product updated successfully"
+        });
+
 
     }catch(err){
         console.error(err);
@@ -95,7 +92,7 @@ export async function updateProduct(req, res) {
 export async function getProductById(req, res) {
     try{
         const productId = req.params.productId;
-        const product = await Product.findOne({ porductId: productId });        
+        const product = await Product.findOne({ productId: productId });
 
         if(product == null){
             res.status(404).json({
