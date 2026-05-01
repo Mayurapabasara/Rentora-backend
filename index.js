@@ -6,6 +6,7 @@ import productRouter from './routes/productRouter.js';
 import jwt from "jsonwebtoken";
 import cors from "cors";
 import dotenv from "dotenv";
+import orderRouter from "./routes/orderRouter.js";
 
 dotenv.config(); // .env file eke thiyn data me file ekt load kirima sidu karai
 
@@ -62,6 +63,7 @@ mongoose.connect(connectionString)
 app.use("/api/students", studentRouter);
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
+app.use("/api/orders", orderRouter);
 
 
 // Arro function and backend starting
