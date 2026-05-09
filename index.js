@@ -21,7 +21,10 @@ app.use(
     (req, res, next) => {
 
         // ✅ Skip authentication for login & register
-        if (req.path === "/api/users/login" || req.path === "/api/users") {
+        // if (req.path === "/api/users/login" || req.path === "/api/users") {
+        //     return next();
+
+        if (req.path.startsWith("/api/users")) {
             return next();
         }
 
