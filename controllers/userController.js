@@ -61,7 +61,8 @@ export function loginUser(req, res){
                         email: user.email,
                         role: user.type,
                         isBlocked: user.isBlocked,
-                        isEmailVerified: user.isEmailVerified
+                        isEmailVerified: user.isEmailVerified,
+                        image: user.image
                     }, process.env.JWT_SECRET);
 
 
@@ -111,3 +112,16 @@ export function deleteUser(req, res){
     res.send("Delete a user");
 } 
 
+export function getUser(req, res){
+    if (req.user == null){
+        res.status(404).json({
+            message: "Unauthorized, please login"
+        })
+        return;
+    }
+    else{
+        res.json(
+            req.user
+        )
+    }
+}
