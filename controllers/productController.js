@@ -30,7 +30,7 @@ export async function getProducts(req, res) {
             message: "Error fetching products"
         });
     }
-    
+
 }
 
 export async function deleteProduct(req, res) {

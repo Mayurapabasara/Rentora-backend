@@ -6,6 +6,7 @@ import productRouter from './routes/productRouter.js';
 import jwt from "jsonwebtoken";
 import cors from "cors";
 import dotenv from "dotenv";
+import orderRouter from "./routes/orderRouter.js";
 
 dotenv.config(); // .env file eke thiyn data me file ekt load kirima sidu karai
 
@@ -15,37 +16,90 @@ app.use(cors());
 app.use(express.json()); // Middleware to parse JSON request bodies
 
 //create a middleware
-app.use(
+// app.use((req, res, next) => {
+//
+//         // Skip authentication for login & register
+//         if (
+//             req.path === "/api/users/login" ||
+//             req.path === "/api/users"
+//         ) {
+//             return next();
+//         }
+//
+//         if (req.path.startsWith("/api/users")) {
+//             return next();
+//         }
+//
+//         let token = req.headers.authorization;
+//
+//         if (token != null) {
+//             token = token.replace("Bearer ", "");
+//             console.log("Token received:", token);
+//
+//             jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+//
+//                 if (err) {
+//                     return res.status(401).json({
+//                         message: "Invalid token, please login again"
+//                     });
+//                 }
+//
+//                 req.user = decoded;
+//                 next();   //ove inside
+//             });
+//
+//         } else {
+//             next(); // no token → continue
+//         }
+//     });
+//
 
-    (req, res, next) => {
 
-        // ✅ Skip authentication for login & register
-        if (req.path === "/api/users/login" || req.path === "/api/users") {
-            return next();
-        }
+app.use((req, res, next) => {
 
-        let token = req.headers.authorization;
+    // Public routes
+    if (
+        req.path === "/api/users/login" ||
+        (req.path === "/api/users" && req.method === "POST")
+    ) {
+        return next();
+    }
 
-        if (token != null) {
-            token = token.replace("Bearer ", "");
-            console.log("Token received:", token);
+    const authHeader = req.headers.authorization;
 
-            jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (!authHeader) {
+        return next();
+    }
 
-                if (err) {
-                    return res.status(401).json({
-                        message: "Invalid token, please login again"
-                    });
-                }
+    if (!authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({
+            message: "Invalid token format"
+        });
+    }
 
-                req.user = decoded;
-                next();   //ove inside
+    const token = authHeader.split(" ")[1];
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+
+        if (err) {
+
+            console.log("JWT ERROR:", err);
+
+            return res.status(401).json({
+                message: "Invalid token"
             });
-
-        } else {
-            next(); // no token → continue
         }
+
+        req.user = decoded;
+
+        console.log("DECODED USER:", decoded);
+
+        next();
     });
+
+});
+
+
 
 
 const connectionString = process.env.MONGO_URL;
@@ -62,6 +116,7 @@ mongoose.connect(connectionString)
 app.use("/api/students", studentRouter);
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
+app.use("/api/orders", orderRouter);
 
 
 // Arro function and backend starting
