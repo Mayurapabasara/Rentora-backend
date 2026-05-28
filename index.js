@@ -120,6 +120,12 @@ app.use("/api/orders", orderRouter);
 
 
 // Arro function and backend starting
-app.listen(5000, () => {
-    console.log("Server is running successfully");
-});
+// app.listen(5000, () => {
+//     console.log("Server is running successfully");
+// });
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT,()=>{
+    console.log(`Server is running Successfully on ${PORT}`)
+})
