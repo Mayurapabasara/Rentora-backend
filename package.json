@@ -11,7 +11,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "��#\u0000 \u0000R\u0000e\u0000n\u0000t\u0000o\u0000r\u0000a\u0000-\u0000b\u0000a\u0000c\u0000k\u0000e\u0000n\u0000d\u0000\r\u0000 \u0000#\u0000 \u0000R\u0000e\u0000n\u0000t\u0000o\u0000r\u0000a\u0000-\u0000b\u0000a\u0000c\u0000k\u0000e\u0000n\u0000d\u0000\r\u0000 \u0000",
   "dependencies": {
     "axios": "^1.16.0",
     "bcrypt": "^6.0.0",
@@ -28,5 +28,8 @@
     "nodemon": "^3.1.14",
     "mocha": "11.7.6",
     "supertest": "7.2.2"
+  },
+  "directories": {
+    "lib": "lib"
   }
 }
